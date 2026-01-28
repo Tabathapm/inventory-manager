@@ -1,0 +1,9 @@
+# Binarios / Ejecutables
+main
+main.exe
+
+# Archivos de entorno (donde van contraseñas, nunca se suben)
+.env
+
+# Carpetas de IDE
+.vscode/
