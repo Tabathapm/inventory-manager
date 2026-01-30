@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # SERVICIO 1: LA APLICACIÓN GO
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    # Se le dice: "No arranques hasta que la base de datos esté lista"
+    depends_on:
+      - db
+    # Variables de entorno para que Go sepa cómo conectarse
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=secret
+      - DB_NAME=inventory_db
+      - DB_PORT=5432
+
+  # SERVICIO 2: LA BASE DE DATOS (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    # Variables para configurar el usuario y contraseña de Postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=inventory_db
+    # Guardar los datos en un "Volumen" persistente
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+# Definir el volumen (el disco duro virtual)
+volumes:
+  postgres_data:
