@@ -1,0 +1,177 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+
+% Configuración de márgenes
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% Configuración de colores para código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Estilo para código Go
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{\textbf{Compendio de Desarrollo Backend}\\ \large Go, PostgreSQL y Docker}
+\author{Inventory Manager Project}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Arquitectura y Estructura del Proyecto}
+
+Pasamos de un script monolítico a una \textbf{Arquitectura Modular}. Esto separa responsabilidades, haciendo el código limpio y mantenible.
+
+\begin{itemize}
+    \item \textbf{\texttt{main.go} (El Director):} Solo se encarga de recibir peticiones HTTP (rutas) y decidir qué función llamar. No contiene lógica SQL.
+    \item \textbf{\texttt{database/} (El Almacén):} Paquete separado donde reside la conexión y lógica SQL.
+    \item \textbf{Visibilidad (Scope):}
+    \begin{itemize}
+        \item \textbf{Mayúscula} (ej. \texttt{InitDB}, \texttt{Producto}): Público/Exportado.
+        \item \textbf{Minúscula} (ej. \texttt{crearTablas}): Privado/Interno.
+    \end{itemize}
+\end{itemize}
+
+\section{Infraestructura: Docker y Docker Compose}
+
+Todo corre aislado en contenedores, sin instalar dependencias en el sistema operativo host.
+
+\begin{itemize}
+    \item \textbf{Contenedores:} Entornos ligeros para ejecutar la aplicación y la base de datos.
+    \item \textbf{\texttt{docker-compose.yml}:} Orquestador que define los servicios:
+    \begin{enumerate}
+        \item \textbf{\texttt{app}:} Código Go (Puerto 8080).
+        \item \textbf{\texttt{db}:} PostgreSQL.
+    \end{enumerate}
+    \item \textbf{Red Interna:} Los contenedores se ven por nombre de servicio (host: \texttt{"db"}).
+    \item \textbf{Volúmenes (Persistencia):}
+    \begin{verbatim}
+volumes:
+  - postgres_data:/var/lib/postgresql/data
+    \end{verbatim}
+    Vital para que los datos sobrevivan al reiniciar los contenedores.
+\end{itemize}
+
+\section{El Lenguaje: Go (Golang)}
+
+\subsection{Estructuras (Structs) y Tags}
+El plano de los datos. Los "Tags" definen cómo se visualizan en JSON.
+
+\begin{lstlisting}[language=Go]
+type Producto struct {
+    ID     int     `json:"id"`
+    Nombre string  `json:"nombre"`
+    Stock  int     `json:"stock"`
+}
+\end{lstlisting}
+
+\subsection{Manejo de Errores}
+Go no usa \texttt{try/catch}. Se verifica el error explícitamente.
+
+\begin{lstlisting}[language=Go]
+resultado, err := funcionPeligrosa()
+if err != nil {
+    log.Fatal(err) // Si falla, detenemos la ejecucion
+}
+\end{lstlisting}
+
+\subsection{Identificador en Blanco (\_)}
+Se usa cuando una función devuelve un valor que no necesitamos.
+\begin{lstlisting}[language=Go]
+// Solo importa el error, ignoramos el resultado sql.Result
+_, err := DB.Exec(query) 
+\end{lstlisting}
+
+\section{Base de Datos: SQL y PostgreSQL}
+
+\subsection{Tipos de Consultas}
+\begin{itemize}
+    \item \textbf{\texttt{DB.Exec}:} Para INSERT, UPDATE, DELETE, CREATE.
+    \item \textbf{\texttt{DB.Query}:} Para SELECT que devuelve múltiples filas.
+    \item \textbf{\texttt{DB.QueryRow}:} Para SELECT de un solo registro (por ID).
+\end{itemize}
+
+\subsection{Seguridad y Placeholders}
+Uso de \texttt{\$1, \$2} para evitar Inyección SQL.
+
+\begin{lstlisting}[language=Go]
+query := "SELECT * FROM productos WHERE id = $1"
+DB.QueryRow(query, idVariable)
+\end{lstlisting}
+
+\subsection{Integridad Referencial}
+Uso de Foreign Keys para relacionar tablas (ej. Ordenes y Productos).
+\begin{lstlisting}[language=SQL]
+producto_id INTEGER REFERENCES productos(id)
+\end{lstlisting}
+
+\section{Integración: HTTP y API REST}
+
+\begin{itemize}
+    \item \textbf{GET:} Leer datos. Parámetros en URL (\texttt{/productos/5}).
+    \item \textbf{POST:} Crear/Accionar. Datos en Body (JSON).
+\end{itemize}
+
+\subsection{Decodificar (Leer JSON)}
+\begin{lstlisting}[language=Go]
+var p Producto
+json.NewDecoder(r.Body).Decode(&p)
+\end{lstlisting}
+
+\subsection{Codificar (Responder JSON)}
+\begin{lstlisting}[language=Go]
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(p)
+\end{lstlisting}
+
+\section{Lógica de Negocio (Ejemplo Venta)}
+
+Flujo transaccional implementado:
+\begin{enumerate}
+    \item \textbf{Recibir:} Orden con ID producto y Cantidad.
+    \item \textbf{Validar:} Existencia y Stock suficiente.
+    \item \textbf{Calcular:} Total = Precio $\times$ Cantidad (Backend autoritativo).
+    \item \textbf{Actualizar:} Restar stock (\texttt{UPDATE}).
+    \item \textbf{Registrar:} Guardar orden (\texttt{INSERT}).
+    \item \textbf{Responder:} Devolver objeto completo.
+\end{enumerate}
+
+\section{Cheat Sheet de Comandos}
+
+\begin{description}
+    \item[docker compose up --build] Reconstruye y levanta los contenedores. Usar ante cambios de código.
+    \item[git checkout -b rama] Crea y cambia a una nueva rama.
+    \item[go mod init] Inicia un nuevo proyecto Go.
+    \item[defer rows.Close()] Cierra la conexión a la DB al finalizar la función.
+\end{description}
+
+\end{document}

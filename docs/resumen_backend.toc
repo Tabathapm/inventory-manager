@@ -1,0 +1,16 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Arquitectura y Estructura del Proyecto}{2}{section.1}%
+\contentsline {section}{\numberline {2}Infraestructura: Docker y Docker Compose}{2}{section.2}%
+\contentsline {section}{\numberline {3}El Lenguaje: Go (Golang)}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Estructuras (Structs) y Tags}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Manejo de Errores}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Identificador en Blanco (\_)}{3}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Base de Datos: SQL y PostgreSQL}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Tipos de Consultas}{3}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Seguridad y Placeholders}{3}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Integridad Referencial}{3}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Integración: HTTP y API REST}{3}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Decodificar (Leer JSON)}{3}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Codificar (Responder JSON)}{4}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Lógica de Negocio (Ejemplo Venta)}{4}{section.6}%
+\contentsline {section}{\numberline {7}Cheat Sheet de Comandos}{4}{section.7}%
