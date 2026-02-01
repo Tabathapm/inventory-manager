@@ -15,6 +15,21 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
+% Define YAML language for listings
+\lstdefinelanguage{yaml}{
+  keywords={services, ports, depends_on, build, app, db, payments},
+  keywordstyle=\color{magenta},
+  ndkeywords={true, false, null},
+  ndkeywordstyle=\color{blue},
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{codegreen},
+  stringstyle=\color{codepurple},
+  morestring=[b]',
+  morestring=[b]"
+}
+
 % Estilo para código Go
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{backcolour},   
@@ -173,5 +188,63 @@ Flujo transaccional implementado:
     \item[go mod init] Inicia un nuevo proyecto Go.
     \item[defer rows.Close()] Cierra la conexión a la DB al finalizar la función.
 \end{description}
+
+
+
+
+\newpage
+\section{Arquitectura de Microservicios}
+
+Evolucionamos el sistema monolítico a una arquitectura distribuida, separando la lógica de cobros en un servicio independiente.
+
+\subsection{Comunicación entre Contenedores}
+Utilizamos la red interna de Docker. Los servicios se resuelven por su nombre en \texttt{docker-compose.yml}, no por IP ni localhost.
+
+\begin{itemize}
+    \item \textbf{Inventario:} \texttt{http://app:8080}
+    \item \textbf{Pagos:} \texttt{http://payments:8081}
+\end{itemize}
+
+\subsection{Cliente HTTP en Go (Hacer Peticiones)}
+El backend ya no solo recibe peticiones (Servidor), ahora también las hace (Cliente).
+
+\begin{lstlisting}[language=Go]
+// 1. Empaquetar datos (Struct -> JSON Bytes)
+jsonData, _ := json.Marshal(solicitud)
+
+// 2. Crear buffer (Reader)
+body := bytes.NewBuffer(jsonData)
+
+// 3. Realizar el POST a la URL interna de Docker
+// Notar el host "payments" en lugar de "localhost"
+resp, err := http.Post("http://payments:8081/cobrar", "application/json", body)
+\end{lstlisting}
+
+\subsection{Docker Compose Multi-Servicio}
+Orquestación de múltiples contenedores simultáneos.
+
+\begin{lstlisting}[language=yaml, style=mystyle]
+services:
+  app:
+    ports: ["8080:8080"]
+    depends_on: [db, payments] # Esperar a los vecinos
+  
+  payments:
+    build: ./payment-service
+    ports: ["8081:8081"]
+\end{lstlisting}
+
+\subsection{Flujo de Venta Distribuido}
+\begin{enumerate}
+    \item Cliente envía orden a \texttt{POST /vender}.
+    \item Inventario calcula total (Precio $\times$ Cantidad).
+    \item \textbf{Bloqueante:} Inventario llama a Pagos y espera 2 segundos.
+    \item Si Pagos responde \texttt{200 OK}, se guarda en DB.
+    \item Si Pagos falla, se cancela la transacción (Integridad).
+\end{enumerate}
+
+
+
+
 
 \end{document}
