@@ -17,6 +17,11 @@ services:
       - DB_NAME=inventory_db
       - DB_PORT=5432
 
+  payments:
+    build: ./payment-service  # Se le dice: "El Dockerfile está en esta carpeta"
+    ports:
+      - "8081:8081"           # Se mapea el puerto 8081
+
   # SERVICIO 2: LA BASE DE DATOS (PostgreSQL)
   db:
     image: postgres:15-alpine
