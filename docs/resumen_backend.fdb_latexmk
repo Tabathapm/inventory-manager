@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1769874777.28045 "c:/Users/tabat/OneDrive/Documentos/Inventory Manager/docs/resumen_backend.tex" "resumen_backend.pdf" "resumen_backend" 1769874779.32273 0
+["pdflatex"] 1770139323.13125 "c:/Users/tabat/OneDrive/Documentos/Inventory Manager/docs/resumen_backend.tex" "resumen_backend.pdf" "resumen_backend" 1770139324.01821 0
   "C:/Users/tabat/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1769874765 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/tabat/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1769874776 14064 75d22b4dc84503b7d7ceff159d23c9b2 ""
   "C:/Users/tabat/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tctt1000.pk" 1769874773 9492 c2451716d2c0bd69f7a6e22d080bcf1d ""
@@ -77,11 +77,11 @@
   "C:/Users/tabat/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/tabat/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/tabat/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/Users/tabat/OneDrive/Documentos/Inventory Manager/docs/resumen_backend.tex" 1769861169 6085 ce66c6b824fce14d4ba8fe4e6b2bedf5 ""
-  "resumen_backend.aux" 1769874779 2302 8b9ef61dc6c1269b4bd0bad1646efe4a "pdflatex"
-  "resumen_backend.out" 1769874779 2950 ba590f1070eb21debd761a7bb4a1ed85 "pdflatex"
-  "resumen_backend.tex" 1769861169 6085 ce66c6b824fce14d4ba8fe4e6b2bedf5 ""
-  "resumen_backend.toc" 1769874779 1355 7f41c7a3e0d748c9e33189719e7aa197 "pdflatex"
+  "c:/Users/tabat/OneDrive/Documentos/Inventory Manager/docs/resumen_backend.tex" 1770139318 6085 ce66c6b824fce14d4ba8fe4e6b2bedf5 ""
+  "resumen_backend.aux" 1770139323 2302 8b9ef61dc6c1269b4bd0bad1646efe4a "pdflatex"
+  "resumen_backend.out" 1770139323 2950 ba590f1070eb21debd761a7bb4a1ed85 "pdflatex"
+  "resumen_backend.tex" 1770139318 6085 ce66c6b824fce14d4ba8fe4e6b2bedf5 ""
+  "resumen_backend.toc" 1770139323 1355 7f41c7a3e0d748c9e33189719e7aa197 "pdflatex"
   (generated)
   "resumen_backend.aux"
   "resumen_backend.log"
